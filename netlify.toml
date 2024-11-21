@@ -4,4 +4,3 @@
 
 [build.environment]
   NODE_VERSION = "16"        # Node 버전을 16으로 설정
-  NODE_OPTIONS = "--openssl-legacy-provider"
