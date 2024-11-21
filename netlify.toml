@@ -1,0 +1,7 @@
+[build]
+  command = "npm run build"  # 빌드 명령어
+  publish = "build"          # 배포할 폴더 (React의 경우 보통 "build")
+
+[build.environment]
+  NODE_VERSION = "16"        # Node 버전을 16으로 설정
+  NODE_OPTIONS = "--openssl-legacy-provider"
