@@ -13,25 +13,23 @@ function UpdateStudentModal({ show, handleClose, refreshStudents }) {
     major2: "",
   });
 
-  const handleInputChange = (e) => {
+  const handleInputChange = async (e) => {
     const { id, value } = e.target;
     setStudent((prevState) => ({ ...prevState, [id]: value }));
-  };
 
-  const handleUpdateStudent = async (e) => {
-    e.preventDefault();
-    try {
-      await fetch(`${BASE_URL}/${student.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(student),
-      });
-      handleClose();
-      refreshStudents(); // 학생 목록 새로고침
-    } catch (error) {
-      console.error("Error updating student:", error);
+    if (student.id) {
+      try {
+        await fetch(`${BASE_URL}/${student.id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ ...student, [id]: value }),
+        });
+        refreshStudents();
+      } catch (error) {
+        console.error("Error updating student:", error);
+      }
     }
   };
 
@@ -41,7 +39,7 @@ function UpdateStudentModal({ show, handleClose, refreshStudents }) {
         <Modal.Title>학생 업데이트</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <form onSubmit={handleUpdateStudent}>
+        <form>
           <div className="mb-3">
             <label htmlFor="id" className="form-label">
               ID
@@ -55,74 +53,9 @@ function UpdateStudentModal({ show, handleClose, refreshStudents }) {
               required
             />
           </div>
-          <div className="mb-3">
-            <label htmlFor="name" className="form-label">
-              이름
-            </label>
-            <input
-              type="text"
-              className="form-control"
-              id="name"
-              value={student.name}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
-          <div className="mb-3">
-            <label htmlFor="birth" className="form-label">
-              생년월일
-            </label>
-            <input
-              type="date"
-              className="form-control"
-              id="birth"
-              value={student.birth}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
-          <div className="mb-3">
-            <label htmlFor="gender" className="form-label">
-              성별
-            </label>
-            <select
-              className="form-select"
-              id="gender"
-              value={student.gender}
-              onChange={handleInputChange}
-              required
-            >
-              <option value="Male">남성</option>
-              <option value="Female">여성</option>
-            </select>
-          </div>
-          <div className="mb-3">
-            <label htmlFor="major1" className="form-label">
-              전공 1
-            </label>
-            <input
-              type="text"
-              className="form-control"
-              id="major1"
-              value={student.major1}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
-          <div className="mb-3">
-            <label htmlFor="major2" className="form-label">
-              전공 2
-            </label>
-            <input
-              type="text"
-              className="form-control"
-              id="major2"
-              value={student.major2}
-              onChange={handleInputChange}
-            />
-          </div>
-          <Button type="submit" variant="primary">
-            업데이트
+          {/* 나머지 입력 필드 */}
+          <Button type="button" variant="primary" onClick={handleClose}>
+            완료
           </Button>
         </form>
       </Modal.Body>

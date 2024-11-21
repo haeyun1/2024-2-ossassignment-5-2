@@ -13,7 +13,7 @@ function DeleteStudentModal({ show, handleClose, refreshStudents }) {
         method: "DELETE",
       });
       handleClose();
-      refreshStudents(); // 학생 목록 새로고침
+      refreshStudents();
     } catch (error) {
       console.error("Error deleting student:", error);
     }
