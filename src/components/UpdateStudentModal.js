@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Modal, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
@@ -14,18 +14,59 @@ function UpdateStudentModal({ show, handleClose, refreshStudents }) {
     major2: "",
   });
   const [loading, setLoading] = useState(false);
+  const [changeCount, setChangeCount] = useState(0); // 변경 횟수 추적
   const navigate = useNavigate();
 
+  // useRef를 사용한 ID 필드 참조
+  const idRef = useRef(null);
+
+  useEffect(() => {
+    if (!show) {
+      setStudent({
+        id: "",
+        name: "",
+        birth: "",
+        gender: "Male",
+        major1: "",
+        major2: "",
+      });
+      setChangeCount(0);
+    }
+  }, [show]);
+
   // 입력 필드 변경 핸들러
-  const handleInputChange = (e) => {
+  // 입력 필드 변경 핸들러
+  const handleInputChange = async (e) => {
     const { id, value } = e.target;
     setStudent((prevState) => ({ ...prevState, [id]: value }));
+
+    // 변경 횟수는 ID 필드를 제외하고 증가
+    if (id !== "id") {
+      setChangeCount((prevCount) => prevCount + 1);
+
+      // 서버에 변경 사항 반영
+      if (student.id) {
+        try {
+          await fetch(`${BASE_URL}/${student.id}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ ...student, [id]: value }),
+          });
+        } catch (error) {
+          console.error("Error updating student:", error);
+        }
+      }
+    }
   };
 
   // 학생 정보 가져오기
-  const handleFetchStudent = async () => {
-    if (!student.id.trim()) {
-      alert("학생 ID를 입력해주세요.");
+  const handleFetchStudent = async (e) => {
+    e.preventDefault();
+    if (!idRef.current.value) {
+      alert("학생 ID를 입력해 주세요.");
+      idRef.current.focus();
       return;
     }
 
@@ -44,29 +85,6 @@ function UpdateStudentModal({ show, handleClose, refreshStudents }) {
     }
   };
 
-  // 학생 정보 업데이트
-  const handleUpdateStudent = async () => {
-    if (!student.id.trim()) {
-      alert("학생 ID를 입력해주세요.");
-      return;
-    }
-
-    try {
-      await fetch(`${BASE_URL}/${student.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(student),
-      });
-      navigate("/"); // 기본 화면으로 이동
-      refreshStudents(); // 학생 목록 새로고침
-      handleCloseModal(); // 모달 닫기
-    } catch (error) {
-      console.error("Error updating student:", error);
-    }
-  };
-
   // 모달 닫기
   const handleCloseModal = () => {
     navigate("/"); // 기본 화면으로 이동
@@ -79,6 +97,11 @@ function UpdateStudentModal({ show, handleClose, refreshStudents }) {
       </Modal.Header>
       <Modal.Body>
         <form>
+          {/* 변경 횟수 표시 */}
+          <div className="mb-3">
+            <strong>총 변경 횟수: {changeCount}</strong>
+          </div>
+
           {/* ID 입력 필드 */}
           <div className="mb-3">
             <label htmlFor="id" className="form-label">
@@ -88,6 +111,7 @@ function UpdateStudentModal({ show, handleClose, refreshStudents }) {
               type="text"
               className="form-control"
               id="id"
+              ref={idRef}
               value={student.id}
               onChange={handleInputChange}
               required
@@ -182,8 +206,8 @@ function UpdateStudentModal({ show, handleClose, refreshStudents }) {
         </form>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="primary" onClick={handleUpdateStudent}>
-          저장
+        <Button variant="secondary" onClick={handleCloseModal}>
+          닫기
         </Button>
       </Modal.Footer>
     </Modal>
