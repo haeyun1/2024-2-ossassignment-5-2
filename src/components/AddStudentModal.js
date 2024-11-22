@@ -49,6 +49,7 @@ function AddStudentModal({ show, handleClose, refreshStudents }) {
       </Modal.Header>
       <Modal.Body>
         <form onSubmit={handleAddStudent}>
+          {/* 이름 입력 */}
           <div className="mb-3">
             <label htmlFor="name" className="form-label">
               이름
@@ -63,7 +64,64 @@ function AddStudentModal({ show, handleClose, refreshStudents }) {
               required
             />
           </div>
-          {/* 생년월일, 성별, 전공 입력 필드 */}
+          {/* 성별 입력 */}
+          <div className="mb-3">
+            <label htmlFor="gender" className="form-label">
+              성별
+            </label>
+            <select
+              className="form-select"
+              id="gender"
+              value={student.gender}
+              onChange={handleInputChange}
+              required
+            >
+              <option value="Male">남성</option>
+              <option value="Female">여성</option>
+              <option value="Other">기타</option>
+            </select>
+          </div>
+          {/* 생일 입력 */}
+          <div className="mb-3">
+            <label htmlFor="birth" className="form-label">
+              생일
+            </label>
+            <input
+              type="date"
+              className="form-control"
+              id="birth"
+              value={student.birth}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+          {/* 전공1 입력 */}
+          <div className="mb-3">
+            <label htmlFor="major1" className="form-label">
+              전공1
+            </label>
+            <input
+              type="text"
+              className="form-control"
+              id="major1"
+              value={student.major1}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+          {/* 전공2 입력 */}
+          <div className="mb-3">
+            <label htmlFor="major2" className="form-label">
+              전공2
+            </label>
+            <input
+              type="text"
+              className="form-control"
+              id="major2"
+              value={student.major2}
+              onChange={handleInputChange}
+            />
+          </div>
           <Button type="submit" variant="primary">
             추가
           </Button>
