@@ -1,5 +1,6 @@
 import React, { useState, useRef } from "react";
 import { Modal, Button } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 
 const BASE_URL = "https://672c66621600dda5a9f84bfc.mockapi.io/user";
 
@@ -11,7 +12,7 @@ function AddStudentModal({ show, handleClose, refreshStudents }) {
     major1: "",
     major2: "",
   });
-
+  const navigate = useNavigate();
   const nameRef = useRef(null);
 
   const handleInputChange = (e) => {
@@ -35,15 +36,19 @@ function AddStudentModal({ show, handleClose, refreshStudents }) {
         },
         body: JSON.stringify(student),
       });
-      handleClose();
-      refreshStudents();
+      navigate("/"); // 기본 화면으로 이동
+      refreshStudents(); // 학생 목록 새로고침
     } catch (error) {
       console.error("Error adding student:", error);
     }
   };
 
+  const handleModalClose = () => {
+    navigate("/"); // 기본 화면으로 이동
+  };
+
   return (
-    <Modal show={show} onHide={handleClose}>
+    <Modal show={show} onHide={handleModalClose}>
       <Modal.Header closeButton>
         <Modal.Title>학생 추가</Modal.Title>
       </Modal.Header>
