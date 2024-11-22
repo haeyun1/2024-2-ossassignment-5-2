@@ -1,9 +1,9 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import ShowList from "./components/ShowList";
-import AddStudentModal from "./components/AddStudentModal";
-import UpdateStudentModal from "./components/UpdateStudentModal";
-import DeleteStudentModal from "./components/DeleteStudentModal";
+import ShowList from "./ShowList";
+import AddStudentModal from "./AddStudentModal";
+import UpdateStudentModal from "./UpdateStudentModal";
+import DeleteStudentModal from "./DeleteStudentModal";
 
 function App() {
   return (
